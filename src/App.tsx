@@ -233,13 +233,14 @@ export default function App() {
       // Force visibility and remove height restrictions
       if (parent) {
         parent.style.display = 'block';
-        parent.style.position = 'fixed';
-        parent.style.left = '0';
+        parent.style.position = 'absolute';
+        parent.style.left = '-9999px';
         parent.style.top = '0';
         parent.style.width = '794px';
-        parent.style.zIndex = '-9999';
+        parent.style.zIndex = '9999';
         parent.style.visibility = 'visible';
         parent.style.opacity = '1';
+        parent.style.backgroundColor = 'white';
       }
 
       previewRef.current.style.display = 'block';
@@ -252,6 +253,8 @@ export default function App() {
       previewRef.current.style.overflow = 'visible';
       previewRef.current.style.minHeight = '0';
       previewRef.current.style.transform = 'none';
+      previewRef.current.style.backgroundColor = 'white';
+      previewRef.current.style.color = 'black';
 
       // Ensure we are at the top of the page for capture
       window.scrollTo(0, 0);
@@ -747,7 +750,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans selection:bg-indigo-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-bottom border-neutral-200 px-6 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-bottom border-neutral-200 px-6 py-4 flex items-center justify-between no-print">
         <div className="flex items-center gap-3">
           <div className="bg-indigo-600 p-2 rounded-lg text-white">
             <FileText size={24} />
@@ -822,7 +825,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Editor Side */}
         <div className={cn(
-          "lg:col-span-5 space-y-8",
+          "lg:col-span-5 space-y-8 no-print",
           activeTab === 'preview' ? "hidden lg:block" : "block"
         )}>
           {activeTab === 'edit' ? (

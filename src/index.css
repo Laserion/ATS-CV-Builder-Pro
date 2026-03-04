@@ -61,3 +61,54 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-neutral-300 rounded-full hover:bg-neutral-400 transition-colors;
 }
+
+@media print {
+  @page {
+    margin: 0;
+    size: A4;
+  }
+  
+  body * {
+    visibility: hidden;
+  }
+  
+  #cv-preview, #cv-preview * {
+    visibility: visible;
+  }
+  
+  #cv-preview {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+    background-color: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Ensure flex containers maintain layout in print */
+  .flex {
+    display: flex !important;
+  }
+  
+  .flex-row {
+    flex-direction: row !important;
+  }
+  
+  .flex-col {
+    flex-direction: column !important;
+  }
+
+  /* Hide UI elements during print */
+  .no-print {
+    display: none !important;
+  }
+}

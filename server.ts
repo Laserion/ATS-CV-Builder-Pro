@@ -1,9 +1,10 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import optimizeAtsHandler from "./api/optimize-ats";
+import generateCoverLetterHandler from "./api/generate-cover-letter";
 
 dotenv.config();
 
@@ -16,76 +17,9 @@ async function startServer() {
 
   app.use(express.json());
 
-  // API Routes
-  app.post("/api/optimize-ats", async (req, res) => {
-    const { content, jobDescription } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-      return res.status(500).json({ error: "API Key no configurada en el servidor." });
-    }
-
-    try {
-      const ai = new GoogleGenAI({ apiKey });
-      const prompt = `
-        Eres un experto en reclutamiento y sistemas ATS. 
-        Optimiza el siguiente contenido de un CV para que sea más legible por máquinas y contenga palabras clave relevantes.
-        ${jobDescription ? `Contexto del trabajo: ${jobDescription}` : 'Optimización general para sistemas ATS.'}
-        
-        Contenido actual:
-        ${content}
-        
-        Por favor, devuelve una versión mejorada del texto, enfocándote en logros cuantificables y palabras clave de la industria.
-        IMPORTANTE: Devuelve SOLO el texto optimizado, sin introducciones ni comentarios adicionales.
-      `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-      });
-
-      res.json({ text: response.text });
-    } catch (error) {
-      console.error("Error en Gemini API (Server):", error);
-      res.status(500).json({ error: "Error al procesar con la IA." });
-    }
-  });
-
-  app.post("/api/generate-cover-letter", async (req, res) => {
-    const { cvData, jobInfo } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-      return res.status(500).json({ error: "API Key no configurada en el servidor." });
-    }
-
-    try {
-      const ai = new GoogleGenAI({ apiKey });
-      const prompt = `
-        Genera una carta de presentación profesional basada en los siguientes datos de CV:
-        Nombre: ${cvData.name}
-        Experiencia: ${JSON.stringify(cvData.experience)}
-        Habilidades: ${cvData.skills.join(", ")}
-        
-        Para el puesto en la empresa: ${jobInfo.company}
-        Dirigido a: ${jobInfo.recipient}
-        Descripción del puesto: ${jobInfo.description}
-        
-        La carta debe ser persuasiva, profesional y resaltar cómo las habilidades del candidato resuelven los problemas de la empresa.
-        IMPORTANTE: Devuelve SOLO el contenido de la carta, sin comentarios adicionales.
-      `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-      });
-
-      res.json({ text: response.text });
-    } catch (error) {
-      console.error("Error al generar carta (Server):", error);
-      res.status(500).json({ error: "Error al generar la carta con la IA." });
-    }
-  });
+  // API Routes (using the same handlers as Vercel)
+  app.post("/api/optimize-ats", (req, res) => optimizeAtsHandler(req, res));
+  app.post("/api/generate-cover-letter", (req, res) => generateCoverLetterHandler(req, res));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

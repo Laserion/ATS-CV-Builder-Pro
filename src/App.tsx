@@ -795,20 +795,15 @@ export default function App() {
 
         <div className="flex items-center gap-2">
           <button 
-            onClick={exportToPDF}
-            disabled={isExporting}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-50"
-          >
-            {isExporting ? <Sparkles size={18} className="animate-pulse" /> : <Download size={18} />}
-            {isExporting ? 'Procesando...' : 'Exportar PDF'}
-          </button>
-          <button 
             onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
           >
             <Printer size={18} />
-            Imprimir
+            Imprimir / Guardar PDF
           </button>
+          <div className="hidden xl:block text-[10px] text-neutral-400 max-w-[100px] leading-tight no-print">
+            Usa "Guardar como PDF" en el menú de impresión
+          </div>
           <button 
             onClick={exportToWord}
             disabled={isExporting}

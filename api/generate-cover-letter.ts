@@ -34,8 +34,9 @@ export default async function handler(req: any, res: any) {
     });
 
     return res.json({ text: response.text });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error en Vercel API (Cover Letter):", error);
-    return res.status(500).json({ error: "Error al generar la carta con la IA." });
+    const errorMessage = error.message || "Error desconocido al generar la carta";
+    return res.status(500).json({ error: `Fallo en la IA: ${errorMessage}` });
   }
 }

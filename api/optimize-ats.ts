@@ -32,8 +32,10 @@ export default async function handler(req: any, res: any) {
     });
 
     return res.json({ text: response.text });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error en Vercel API (Optimize):", error);
-    return res.status(500).json({ error: "Error al procesar con la IA." });
+    // Return a more descriptive error message to the client
+    const errorMessage = error.message || "Error desconocido en la comunicación con Gemini";
+    return res.status(500).json({ error: `Fallo en la IA: ${errorMessage}` });
   }
 }

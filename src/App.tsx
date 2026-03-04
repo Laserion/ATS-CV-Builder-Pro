@@ -233,11 +233,11 @@ export default function App() {
       // Force visibility and remove height restrictions
       if (parent) {
         parent.style.display = 'block';
-        parent.style.position = 'absolute';
-        parent.style.left = '-9999px';
+        parent.style.position = 'fixed';
+        parent.style.left = '0';
         parent.style.top = '0';
         parent.style.width = '794px';
-        parent.style.zIndex = '9999';
+        parent.style.zIndex = '-9999';
         parent.style.visibility = 'visible';
         parent.style.opacity = '1';
         parent.style.backgroundColor = 'white';
@@ -432,26 +432,25 @@ export default function App() {
             for (let i = 0; i < styleTags.length; i++) {
               const tag = styleTags[i];
               if (tag.innerHTML.includes('okl')) {
-                tag.innerHTML = tag.innerHTML.replace(/oklch\([^)]+\)/g, '#4f46e5'); // Replace with indigo-600 hex
+                // Better regex for oklch replacement
+                tag.innerHTML = tag.innerHTML.replace(/oklch\([^)]+\)/g, (match) => {
+                  if (match.includes(' 0%') || match.includes(' 0 ')) return '#ffffff';
+                  if (match.includes(' 100%') || match.includes(' 1 ')) return '#000000';
+                  return '#4f46e5';
+                });
                 tag.innerHTML = tag.innerHTML.replace(/oklab\([^)]+\)/g, '#4f46e5');
               }
             }
 
-            // Fix for stretched photos in html2canvas: 
-            // html2canvas doesn't support object-fit: cover well.
-            // We convert <img> to background-images on their parents.
+            // Fix for photos: Ensure they have a fixed size in the clone
             const images = element.querySelectorAll('img');
             images.forEach((img: any) => {
-              if (img.classList.contains('object-cover')) {
-                const parent = img.parentElement;
-                if (parent) {
-                  parent.style.backgroundImage = `url(${img.src})`;
-                  parent.style.backgroundSize = 'cover';
-                  parent.style.backgroundPosition = 'center';
-                  parent.style.backgroundRepeat = 'no-repeat';
-                  parent.style.display = 'block';
-                  img.style.opacity = '0';
-                }
+              img.style.objectFit = 'cover';
+              img.style.display = 'block';
+              // If it's the profile photo, ensure it doesn't explode
+              if (img.src.startsWith('data:image') || img.src.includes('profile')) {
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
               }
             });
 

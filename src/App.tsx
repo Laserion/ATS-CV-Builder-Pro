@@ -268,7 +268,7 @@ export default function App() {
       const canvas = await html2canvas(previewRef.current, {
         scale: 2,
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
         logging: false,
         backgroundColor: '#ffffff',
         width: 794,
@@ -278,11 +278,14 @@ export default function App() {
         scrollX: 0,
         scrollY: 0,
         onclone: (clonedDoc) => {
+          clonedDoc.body.style.backgroundColor = '#ffffff';
           const element = clonedDoc.getElementById('cv-preview');
           if (element) {
             element.style.display = 'block';
             element.style.position = 'static';
             element.style.width = '794px';
+            element.style.backgroundColor = '#ffffff';
+            element.style.color = '#000000';
             element.style.margin = '0';
             element.style.padding = '0';
             element.style.boxShadow = 'none';
@@ -439,6 +442,9 @@ export default function App() {
                   return '#4f46e5';
                 });
                 tag.innerHTML = tag.innerHTML.replace(/oklab\([^)]+\)/g, '#4f46e5');
+                // Replace any other oklch occurrences
+                tag.innerHTML = tag.innerHTML.replace(/oklch/g, 'rgb');
+                tag.innerHTML = tag.innerHTML.replace(/oklab/g, 'rgb');
               }
             }
 
@@ -461,7 +467,7 @@ export default function App() {
               
               // Check inline styles
               if (el.style.color?.includes('okl')) el.style.color = '#000000';
-              if (el.style.backgroundColor?.includes('okl')) el.style.backgroundColor = 'transparent';
+              if (el.style.backgroundColor?.includes('okl')) el.style.backgroundColor = '#ffffff';
               if (el.style.borderColor?.includes('okl')) el.style.borderColor = '#e5e5e5';
               
               // Also check for common attributes that might have colors
@@ -477,7 +483,7 @@ export default function App() {
               // Force some common properties to be hex if they are using oklch
               const computed = window.getComputedStyle(el);
               if (computed.color.includes('okl')) el.style.color = '#000000';
-              if (computed.backgroundColor.includes('okl')) el.style.backgroundColor = 'transparent';
+              if (computed.backgroundColor.includes('okl')) el.style.backgroundColor = '#ffffff';
               if (computed.borderColor.includes('okl')) el.style.borderColor = '#e5e5e5';
             }
           }
@@ -491,7 +497,7 @@ export default function App() {
         throw new Error("El canvas generado tiene dimensiones inválidas. Asegúrate de que la vista previa sea visible.");
       }
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       
       const pageWidth = pdf.internal.pageSize.getWidth();

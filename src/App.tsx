@@ -233,20 +233,25 @@ export default function App() {
       // Force visibility and remove height restrictions
       if (parent) {
         parent.style.display = 'block';
-        parent.style.position = 'absolute';
-        parent.style.left = '-9999px';
+        parent.style.position = 'fixed';
+        parent.style.left = '0';
         parent.style.top = '0';
         parent.style.width = '794px';
+        parent.style.zIndex = '-9999';
+        parent.style.visibility = 'visible';
+        parent.style.opacity = '1';
       }
 
       previewRef.current.style.display = 'block';
       previewRef.current.style.position = 'relative';
       previewRef.current.style.left = '0';
+      previewRef.current.style.top = '0';
       previewRef.current.style.width = '794px';
       previewRef.current.style.height = 'auto';
       previewRef.current.style.maxHeight = 'none';
       previewRef.current.style.overflow = 'visible';
       previewRef.current.style.minHeight = '0';
+      previewRef.current.style.transform = 'none';
 
       // Ensure we are at the top of the page for capture
       window.scrollTo(0, 0);
@@ -267,6 +272,8 @@ export default function App() {
         height: scrollHeight,
         windowWidth: 794,
         windowHeight: scrollHeight,
+        scrollX: 0,
+        scrollY: 0,
         onclone: (clonedDoc) => {
           const element = clonedDoc.getElementById('cv-preview');
           if (element) {
